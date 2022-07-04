@@ -1,6 +1,7 @@
 const {
     fetchTopics,
     selectArticleById,
+    updateVoteCount
 } = require("../models/model");
 
 exports.getTopics = (req, res, next) => {
@@ -29,3 +30,13 @@ exports.customErrorHandler = (err, req, res, next) => {
     console.log(err, "<----- unhandled error");
     res.status(500).send(err);
   };
+
+  exports.updateArticle = (req, res, next) => {
+    const { article_id } = req.params;
+    console.log(req.body)
+    const { inc_votes } = req.body;
+    //console.log(article_id, inc_votes)
+    updateVoteCount(article_id, inc_votes).then((article) => {
+        res.status(201).send({article})
+    }).catch((err) => next(err))
+}

@@ -10,8 +10,8 @@ afterAll(() => {
     if (db.end) db.end();
   });
 
-  describe("GET /api/topics", ()=> {
-    test("status: 200, responds with an array of topic objects ", () => {
+    describe("GET /api/topics", ()=> {
+      test("status: 200, responds with an array of topic objects ", () => {
         return request(app)
         .get("/api/topics")
         .expect(200)
@@ -65,4 +65,26 @@ afterAll(() => {
         })
     })
   })
+
+  describe("PATCH /api/articles/:article_id" , () => {
+    test("status: 201, returns requested article with updated votes" ,() => {
+        const req_body = { inc_votes: 150 }
+        return request(app)
+        .patch("/api/articles/3")
+        .send(req_body)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.article).toEqual({
+                article_id: 3,
+                title: "Eight pug gifs that remind me of mitch",
+                topic: "mitch",
+                author: "icellusedkars",
+                body: "some gifs",
+                created_at: "2020-11-03T09:12:00.000Z",
+                votes: 150,
+            })
+        })
+    })
+})
+
 

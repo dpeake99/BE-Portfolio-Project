@@ -1,6 +1,6 @@
 const {
     fetchTopics,
-    selectArticleById
+    selectArticleById,
 } = require("../models/model");
 
 exports.getTopics = (req, res, next) => {

@@ -48,4 +48,21 @@ afterAll(() => {
             })
         })
     })
+    test("status: 400 when passed an invalid id", () => {
+        return request(app)
+        .get("/api/articles/bannana")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid article_id")
+        })
+    })
+    test("status: 404 when passed an id that could not be found", () => {
+        return request(app)
+        .get("/api/articles/1000")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Article not found")
+        })
+    })
   })
+

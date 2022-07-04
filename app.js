@@ -5,7 +5,7 @@ const {
     getArticleById,
     customErrorHandler,
     unhandledErrorHandler,
-    updateArticle
+    updateArticle,
 } = require("./controllers/controller");
 
 const app = express()

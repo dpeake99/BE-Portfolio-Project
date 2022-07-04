@@ -68,10 +68,9 @@ afterAll(() => {
 
   describe("PATCH /api/articles/:article_id" , () => {
     test("status: 201, returns requested article with updated votes" ,() => {
-        const req_body = { inc_votes: 150 }
         return request(app)
         .patch("/api/articles/3")
-        .send(req_body)
+        .send({ inc_votes: 150 })
         .expect(201)
         .then(({body}) => {
             expect(body.article).toEqual({
@@ -85,6 +84,16 @@ afterAll(() => {
             })
         })
     })
+    test("status: 404 when passed an id that could not be found", () => {
+        return request(app)
+        .patch("/api/articles/1000")
+        .send({ inc_votes: 150 })
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Article not found")
+        })
+    })
 })
+
 
 

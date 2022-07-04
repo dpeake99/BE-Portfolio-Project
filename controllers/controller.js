@@ -1,7 +1,8 @@
 const {
     fetchTopics,
     selectArticleById,
-    updateVoteCount
+    updateVoteCount,
+    fetchUsers
 } = require("../models/model");
 
 exports.getTopics = (req, res, next) => {
@@ -33,10 +34,14 @@ exports.customErrorHandler = (err, req, res, next) => {
 
   exports.updateArticle = (req, res, next) => {
     const { article_id } = req.params;
-    console.log(req.body)
     const { inc_votes } = req.body;
-    //console.log(article_id, inc_votes)
     updateVoteCount(article_id, inc_votes).then((article) => {
         res.status(201).send({article})
     }).catch((err) => next(err))
-}
+  }
+
+  exports.getUsers = (req, res, next) => {
+    fetchUsers().then((users) => {
+      res.status(200).send(users)
+    }) .catch((err) => next(err))
+  }

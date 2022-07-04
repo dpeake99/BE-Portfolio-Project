@@ -68,10 +68,9 @@ afterAll(() => {
 
   describe("PATCH /api/articles/:article_id" , () => {
     test("status: 201, returns requested article with updated votes" ,() => {
-        const req_body = { inc_votes: 150 }
         return request(app)
         .patch("/api/articles/3")
-        .send(req_body)
+        .send({ inc_votes: 150 })
         .expect(201)
         .then(({body}) => {
             expect(body.article).toEqual({
@@ -85,6 +84,36 @@ afterAll(() => {
             })
         })
     })
+    test("status: 404 when passed an id that could not be found", () => {
+        return request(app)
+        .patch("/api/articles/1000")
+        .send({ inc_votes: 150 })
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Article not found")
+        })
+    })
+})
+describe("GET /api/users", ()=> {
+    test("status: 200, responds with an array of user objects ", () => {
+      return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({body}) => {
+          const users = body
+          expect(users).toBeInstanceOf(Array);
+          expect(users).toHaveLength(4);
+          users.forEach((user) => {
+              expect(user).toEqual(
+                  expect.objectContaining({
+                      username: expect.any(String),
+                      name: expect.any(String),
+                      avatar_url: expect.any(String),
+                  })
+              )
+          })
+      })
+  })
 })
 
 

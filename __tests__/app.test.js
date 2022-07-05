@@ -32,7 +32,7 @@ afterAll(() => {
   })
 
   describe("GET /api/articles/:article_id", () => {
-    test("status:200, returns the request article", () => {
+    test("status:200, returns the request article with comment count included", () => {
         return request(app)
         .get("/api/articles/3")
         .expect(200)
@@ -45,6 +45,7 @@ afterAll(() => {
                 body: "some gifs",
                 created_at: "2020-11-03T09:12:00.000Z",
                 votes: 0,
+                comment_count: "2",
             })
         })
     })
@@ -93,6 +94,54 @@ afterAll(() => {
             expect(body.msg).toEqual("Article not found")
         })
     })
+    test("status: 400 when passed an invalid id", () => {
+        return request(app)
+        .patch("/api/articles/bannana")
+        .send({inc_votes: 150})
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid article_id")
+        })
+    })
+    test("status: 400 when passed an invalid inc_votes value", () => {
+        return request(app)
+        .patch("/api/articles/4")
+        .send({inc_votes: "bannana"})
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid inc_votes value")
+        })
+    })
+    test("status: 400 when passed no inc_votes value", () => {
+        return request(app)
+        .patch("/api/articles/4")
+        .send({})
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid inc_votes value")
+        })
+    })
+})
+describe("GET /api/users", ()=> {
+    test("status: 200, responds with an array of user objects ", () => {
+      return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({body}) => {
+          const users = body
+          expect(users).toBeInstanceOf(Array);
+          expect(users).toHaveLength(4);
+          users.forEach((user) => {
+              expect(user).toEqual(
+                  expect.objectContaining({
+                      username: expect.any(String),
+                      name: expect.any(String),
+                      avatar_url: expect.any(String),
+                  })
+              )
+          })
+      })
+  })
 })
 
 

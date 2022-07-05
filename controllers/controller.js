@@ -34,6 +34,9 @@ exports.customErrorHandler = (err, req, res, next) => {
 
   exports.updateArticle = (req, res, next) => {
     const { article_id } = req.params;
+    // if (req.params.inc_votes === undefined) {
+    //   res.status(400).send("No inc_votes value")
+    // }
     const { inc_votes } = req.body;
     updateVoteCount(article_id, inc_votes).then((article) => {
         res.status(201).send({article})

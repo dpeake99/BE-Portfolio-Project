@@ -112,6 +112,15 @@ afterAll(() => {
             expect(body.msg).toEqual("Invalid inc_votes value")
         })
     })
+    test("status: 400 when passed no inc_votes value", () => {
+        return request(app)
+        .patch("/api/articles/4")
+        .send({})
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid inc_votes value")
+        })
+    })
 })
 describe("GET /api/users", ()=> {
     test("status: 200, responds with an array of user objects ", () => {

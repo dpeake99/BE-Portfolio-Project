@@ -15,3 +15,13 @@ exports.selectArticleById = (article_id) => {
         } else return result.rows[0];
     })
 }
+
+exports.updateVoteCount = (article_id, inc_votes) => {
+    return db.query("UPDATE articles SET votes = votes + $2 WHERE article_id =$1 RETURNING *", [article_id, inc_votes])
+    .then((result) => {
+        if (result.rows[0] === undefined){
+            return Promise.reject({status: 404, msg: "Article not found"})
+        } else return result.rows[0];
+    })
+}
+

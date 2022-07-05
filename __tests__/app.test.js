@@ -32,7 +32,7 @@ afterAll(() => {
   })
 
   describe("GET /api/articles/:article_id", () => {
-    test("status:200, returns the request article", () => {
+    test("status:200, returns the request article with comment count included", () => {
         return request(app)
         .get("/api/articles/3")
         .expect(200)
@@ -45,6 +45,7 @@ afterAll(() => {
                 body: "some gifs",
                 created_at: "2020-11-03T09:12:00.000Z",
                 votes: 0,
+                comment_count: "2",
             })
         })
     })
@@ -91,6 +92,24 @@ afterAll(() => {
         .expect(404)
         .then(({body}) => {
             expect(body.msg).toEqual("Article not found")
+        })
+    })
+    test("status: 400 when passed an invalid id", () => {
+        return request(app)
+        .patch("/api/articles/bannana")
+        .send({inc_votes: 150})
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid article_id")
+        })
+    })
+    test("status: 400 when passed an invalid inc_votes value", () => {
+        return request(app)
+        .patch("/api/articles/4")
+        .send({inc_votes: "bannana"})
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid inc_votes value")
         })
     })
 })

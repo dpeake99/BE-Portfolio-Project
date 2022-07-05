@@ -45,7 +45,7 @@ afterAll(() => {
                 body: "some gifs",
                 created_at: "2020-11-03T09:12:00.000Z",
                 votes: 0,
-                comment_count: "2",
+                comment_count: 2,
             })
         })
     })
@@ -144,5 +144,30 @@ describe("GET /api/users", ()=> {
   })
 })
 
+describe("GET /api/articles", ()=> {
+    test("status: 200, responds with an array of article objects ordered by date in descending order", () => {
+      return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({body}) => {
+          const articles = body
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toHaveLength(12);
+          articles.forEach((article) => {
+              expect(article).toEqual(
+                  expect.objectContaining({
+                      author: expect.any(String),
+                      title: expect.any(String),
+                      article_id: expect.any(Number),
+                      topic: expect.any(String),
+                      created_at: expect.any(String),
+                      votes: expect.any(Number),
+                      comment_count: expect.any(Number)
+                  })
+              )
+          })
+      })
+  })
+})
 
 

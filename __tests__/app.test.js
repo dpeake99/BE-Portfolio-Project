@@ -45,7 +45,7 @@ afterAll(() => {
                 body: "some gifs",
                 created_at: "2020-11-03T09:12:00.000Z",
                 votes: 0,
-                comment_count: "2",
+                comment_count: 2,
             })
         })
     })
@@ -151,7 +151,6 @@ describe("GET /api/articles", ()=> {
       .expect(200)
       .then(({body}) => {
           const articles = body
-          console.log(articles)
           expect(articles).toBeInstanceOf(Array);
           expect(articles).toHaveLength(12);
           articles.forEach((article) => {
@@ -163,7 +162,7 @@ describe("GET /api/articles", ()=> {
                       topic: expect.any(String),
                       created_at: expect.any(String),
                       votes: expect.any(Number),
-                      comment_count: expect.any(String)
+                      comment_count: expect.any(Number)
                   })
               )
           })

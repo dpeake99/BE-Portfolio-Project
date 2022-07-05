@@ -170,4 +170,43 @@ describe("GET /api/articles", ()=> {
   })
 })
 
+describe("GET /api/articles/:article_id/comments", () => {
+    test("status:200, returns an array of comment objects relating to the requested article", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+                const comments = body
+                expect(comments).toBeInstanceOf(Array)
+                expect(comments).toHaveLength(11)
+                comments.forEach((comment)=> {
+                    expect(comment).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)                        
+                        })
+                    )
+                })
+            })
+        })
+    })
+    test("status: 400 when passed an invalid id", () => {
+        return request(app)
+        .get("/api/articles/bannana/comments")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid article_id")
+        })
+    })
+    test("status: 404 when passed an id that could not be found", () => {
+        return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Article not found")
+        })
+    })
 

@@ -6,7 +6,8 @@ const {
     customErrorHandler,
     unhandledErrorHandler,
     updateArticle,
-    getUsers
+    getUsers,
+    getArticles
 } = require("./controllers/controller");
 
 const app = express()
@@ -16,6 +17,7 @@ app.use(express.json())
 app.get("/api/topics", getTopics)
 app.get("/api/articles/:article_id", getArticleById)
 app.get("/api/users", getUsers)
+app.get("/api/articles", getArticles)
 
 app.patch("/api/articles/:article_id", updateArticle)
 

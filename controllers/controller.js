@@ -2,7 +2,8 @@ const {
     fetchTopics,
     selectArticleById,
     updateVoteCount,
-    fetchUsers
+    fetchUsers,
+    fetchArticles
 } = require("../models/model");
 
 exports.getTopics = (req, res, next) => {
@@ -34,9 +35,6 @@ exports.customErrorHandler = (err, req, res, next) => {
 
   exports.updateArticle = (req, res, next) => {
     const { article_id } = req.params;
-    // if (req.params.inc_votes === undefined) {
-    //   res.status(400).send("No inc_votes value")
-    // }
     const { inc_votes } = req.body;
     updateVoteCount(article_id, inc_votes).then((article) => {
         res.status(201).send({article})
@@ -48,3 +46,10 @@ exports.customErrorHandler = (err, req, res, next) => {
       res.status(200).send(users)
     }) .catch((err) => next(err))
   }
+
+  exports.getArticles = (req, res, next) => {
+    fetchArticles().then((articles) => {
+      res.status(200).send(articles)
+    }).catch((err) => next(err))
+  }  
+

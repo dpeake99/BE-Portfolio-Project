@@ -142,7 +142,7 @@ describe("GET /api/articles", ()=> {
           })
       })
   })
-  test("should sort by query", () => {
+  test("should sort articles by query for any valid column (created_at, titles, article_id, votes, comment_count, author)", () => {
     return request(app)
     .get("/api/articles")
     .query({
@@ -152,9 +152,7 @@ describe("GET /api/articles", ()=> {
     .expect(200)
     .then(({body}) => {
         const articles = body;
-        for (i = 1; i = articles.lenght; i++){
-          expect(articles[i].votes >= articles[i-1].votes)      
-        }    
+        expect(articles).toBeSortedBy("votes", {ascending: true})   
     }) 
   })
   test("should reject invalid sort query", () => {
@@ -271,3 +269,20 @@ describe("POST /api/articles/:article_id/comments", () => {
         })
     })
 })
+
+describe("12. DELETE /api/comments/:comment_id", () => {
+    test("status: 204 and returns no content", () => {
+        return request(app)
+        .delete("/api/comments/4")
+        .expect(204)
+    })
+    test("400: invalid comment id when no comments with requested id", () => {
+        return request(app)
+          .delete("/api/comments/1000")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toEqual("Invalid Comment Id");
+          });
+      });
+})
+

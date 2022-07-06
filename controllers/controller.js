@@ -5,7 +5,8 @@ const {
     fetchUsers,
     fetchArticles,
     fetchArticleComments,
-    insertComment
+    insertComment,
+    removeComment
 } = require("../models/model");
 
 exports.getTopics = (req, res, next) => {
@@ -58,4 +59,11 @@ exports.postNewComment = (req, res, next) => {
     insertComment(article_id, comment).then((newComment) => {
       res.status(201).send({newComment})
     }).catch((err) => next(err))
+}
+
+exports.deleteComment = (req, res, next) => {
+  const {comment_id} = req.params;
+  removeComment(comment_id).then(() => {
+    res.status(204).end()
+  }).catch((err) => next(err))
 }

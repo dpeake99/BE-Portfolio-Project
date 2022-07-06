@@ -71,6 +71,9 @@ exports.insertComment = (article_id, comment) => {
 }
 
 exports.removeComment = (comment_id) => {
+    if (/[^\d]/gi.test(comment_id)) {
+        return Promise.reject(({status: 400, msg: "Invalid Comment Id"}))
+    }
     return db.query("DELETE FROM comments WHERE comment_id =$1 RETURNING *", [comment_id])
     .then((result) => {
         if (result.rows[0] === undefined){

@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
+const endpoints = require("../endpoints")
 
 beforeEach(() => seed(testData));
 
@@ -270,7 +271,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     })
 })
 
-describe("12. DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
     test("status: 204 and returns no content", () => {
         return request(app)
         .delete("/api/comments/4")
@@ -284,5 +285,24 @@ describe("12. DELETE /api/comments/:comment_id", () => {
             expect(msg).toEqual("Invalid Comment Id");
           });
       });
+      test("404: invalid comment id when passed an invalid id", () => {
+        return request(app)
+          .delete("/api/comments/bannana")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toEqual("Invalid Comment Id");
+          });
+      });
+})
+
+describe("GET /api", () => {
+    test("status: 200 returns all avaialble endpoints", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toEqual(endpoints)
+        })
+    })
 })
 

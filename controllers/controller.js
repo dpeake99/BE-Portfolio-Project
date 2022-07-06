@@ -9,6 +9,8 @@ const {
     removeComment
 } = require("../models/model");
 
+const endpoints = require("../endpoints.js")
+
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {
         res.status(200).send({topics});
@@ -66,4 +68,8 @@ exports.deleteComment = (req, res, next) => {
   removeComment(comment_id).then(() => {
     res.status(204).end()
   }).catch((err) => next(err))
+}
+
+exports.getEndpoints = (req, res, next) => {
+  res.status(200).send(endpoints)
 }

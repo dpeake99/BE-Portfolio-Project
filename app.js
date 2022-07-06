@@ -7,7 +7,8 @@ const {
     getUsers,
     getArticles,
     getArticleComments,
-    postNewComment
+    postNewComment,
+    deleteComment
 } = require("./controllers/controller");
 
 const {
@@ -28,6 +29,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments)
 app.patch("/api/articles/:article_id", updateArticle)
 
 app.post("/api/articles/:article_id/comments", postNewComment)
+
+app.delete("/api/comments/:comment_id", deleteComment)
 
 app.use(customErrorHandler);
 app.use(unhandledErrorHandler);

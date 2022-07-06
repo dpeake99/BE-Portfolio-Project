@@ -37,15 +37,14 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
         return Promise.reject({status: 400, msg: "Invalid Order Query"})
     }
     const values = []
-    let text = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, CAST(COUNT(comments.article_id) AS INT) AS comment_count 
+    let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, CAST(COUNT(comments.article_id) AS INT) AS comment_count 
     FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`
     if (topic !== undefined){
         values.push(topic)
-        text += ` WHERE topic = $1`
+        queryStr += ` WHERE topic = $1`
     }
-    text += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`
-    console.log(text, values)
-    return db.query(text, values)
+    queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`
+    return db.query(queryStr, values)
     .then((result) => result.rows)
 }
 
@@ -69,4 +68,13 @@ exports.insertComment = (article_id, comment) => {
                     [body, username, article_id]).then((result) => result.rows[0])
             }
     }) 
+}
+
+exports.removeComment = (comment_id) => {
+    return db.query("DELETE FROM comments WHERE comment_id =$1 RETURNING *", [comment_id])
+    .then((result) => {
+        if (result.rows[0] === undefined){
+            return Promise.reject({status: 400, msg: "Invalid Comment Id"})
+        }
+    })
 }

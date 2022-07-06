@@ -1,4 +1,6 @@
 const db = require("../db/connection");
+const format = require("pg-format")
+const {createRef, formatComments} = require("../db/helpers/utils")
 
 exports.fetchTopics = () => {
     return db.query("SELECT * FROM topics").then((result) => result.rows )
@@ -47,7 +49,31 @@ exports.fetchArticleComments = (article_id) => {
     return db.query("SELECT * FROM comments WHERE article_id = $1", [article_id])
     .then((result) => {
         if (result.rows[0] === undefined){
-            return Promise.reject({status: 404, msg: "Article not found"})
+            return Promise.reject({status: 404, msg: "There are no comments for the requested article"})
         } else return result.rows;
+    })
+}
+
+exports.insertComment = (article_id, comment) => {
+    const { body, username } = comment
+    if (/[^\d]/gi.test(article_id)) {
+        return Promise.reject(({status: 400, msg: "Invalid article_id"}))
+    }
+    return db.query('SELECT * FROM articles WHERE article_id = $1', [article_id])
+    .then((result) => {
+        if (result.rows[0] === undefined){
+            return Promise.reject({status: 404, msg: "Article not found"})
+        } else {
+            return db.query('SELECT * FROM users WHERE username =$1', [username])
+            .then((result) => {
+                if (result.rows[0] === undefined){
+                    return Promise.reject({status: 404, msg: "User does not exist"})
+                } else {
+                    return db.query("INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *", 
+                    [body, username, article_id]).then((result) => result.rows[0])
+            }
+        })
+        
+        }
     })
 }

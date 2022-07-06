@@ -3,13 +3,17 @@ const express = require('express');
 const {
     getTopics,
     getArticleById,
-    customErrorHandler,
-    unhandledErrorHandler,
     updateArticle,
     getUsers,
     getArticles,
-    getArticleComments
+    getArticleComments,
+    postNewComment
 } = require("./controllers/controller");
+
+const {
+    customErrorHandler,
+    unhandledErrorHandler
+} = require("./controllers/errorHandling")
 
 const app = express()
 
@@ -22,6 +26,8 @@ app.get("/api/articles", getArticles)
 app.get("/api/articles/:article_id/comments", getArticleComments)
 
 app.patch("/api/articles/:article_id", updateArticle)
+
+app.post("/api/articles/:article_id/comments", postNewComment)
 
 app.use(customErrorHandler);
 app.use(unhandledErrorHandler);

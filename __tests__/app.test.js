@@ -192,7 +192,6 @@ describe("GET /api/articles/:article_id/comments", () => {
                 })
             })
         })
-    })
     test("status: 400 when passed an invalid id", () => {
         return request(app)
         .get("/api/articles/bannana/comments")
@@ -201,12 +200,79 @@ describe("GET /api/articles/:article_id/comments", () => {
             expect(body.msg).toEqual("Invalid article_id")
         })
     })
-    test("status: 404 when passed an id that could not be found", () => {
+    test("status: 404 when passed an id with no related comments", () => {
         return request(app)
         .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toEqual("There are no comments for the requested article")
+        })
+    })
+}) 
+
+describe("POST /api/articles/:article_id/comments", () => {
+    test("status: 201, returns newly posted comment", () => {
+        return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+                username: "rogersop",
+                body: "orem ipsum dolor sit amet, consectetur adipiscing elit."
+            })
+        .expect(201)
+        .then(({body}) => {
+            expect(body.newComment).toEqual({
+                article_id: 1,
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: "rogersop",
+                body: "orem ipsum dolor sit amet, consectetur adipiscing elit."   
+            }) 
+        })    
+    })
+    test("status: 400 when passed an invalid id", () => {
+        return request(app)
+        .post("/api/articles/bannana/comments")
+        .send({
+            username: "rogersop",
+            body: "orem ipsum dolor sit amet, consectetur adipiscing elit."
+        })
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Invalid article_id")
+        })
+    })
+    test("status: 404 when passed an article_id that could not be found", () => {
+        return request(app)
+        .post("/api/articles/1000/comments")
+        .send({
+            username: "rogersop",
+            body: "orem ipsum dolor sit amet, consectetur adipiscing elit."
+        })
         .expect(404)
         .then(({body}) => {
             expect(body.msg).toEqual("Article not found")
         })
     })
-
+    test("status: 404 when passed a username that could not be found", () => {
+        return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+                username: "david",
+                body: "orem ipsum dolor sit amet, consectetur adipiscing elit."
+            })
+        .expect(404) 
+        .then(({body}) => {
+            expect(body.msg).toEqual("User does not exist")   
+        })
+    })
+    test("status: 400 when passed an invalid body", () => {
+        return request(app)
+        .post("/api/articles/1/comments")
+        .send({})
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toEqual("Passed invalid body")
+        })
+    })
+})

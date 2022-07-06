@@ -9,7 +9,7 @@ const {
     removeComment
 } = require("../models/model");
 
-const endpoints = require("../endpoints.js")
+const endpoints = require("../endpoints.json")
 
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {

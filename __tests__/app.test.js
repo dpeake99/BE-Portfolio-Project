@@ -3,7 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
-const endpoints = require("../endpoints")
+const endpoints = require("../endpoints.json")
 
 beforeEach(() => seed(testData));
 
@@ -285,7 +285,7 @@ describe("DELETE /api/comments/:comment_id", () => {
             expect(msg).toEqual("Invalid Comment Id");
           });
       });
-      test("404: invalid comment id when passed an invalid id", () => {
+      test("400: invalid comment id when passed an invalid id", () => {
         return request(app)
           .delete("/api/comments/bannana")
           .expect(400)

@@ -1,4 +1,5 @@
-module.exports = [
+module.exports = {
+  articles: [
   {
     title: "Running a Node App",
     topic: "coding",
@@ -290,4 +291,4 @@ module.exports = [
     created_at: 1583788860000,
     votes: 0,
   },
-];
+]};
